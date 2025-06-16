@@ -194,5 +194,3 @@ Super Mario game successfully deployed on Minikube via secure Jenkins CI/CD pipe
 
 [GitHub - vinaypdb/secure-helm-deployment](https://github.com/vinaypdb/secure-helm-deployment)
 
-Let me know if you'd like to turn this into a `README.md`, PDF, or LinkedIn project summary!
-
