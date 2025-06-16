@@ -189,8 +189,3 @@ Access at: http://192.168.49.2:<NodePort>
 Super Mario game successfully deployed on Minikube via secure Jenkins CI/CD pipeline with Docker, Helm, and Trivy.
 
 ---
-
-## 📘 Repository
-
-[GitHub - vinaypdb/secure-helm-deployment](https://github.com/vinaypdb/secure-helm-deployment)
-
