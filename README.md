@@ -19,7 +19,7 @@ This project demonstrates a **DevSecOps CI/CD pipeline** for deploying a contain
 
 ## 📄 Full Documentation
 
-See [SECURE_HELM_DEPLOYMENT.md](./SECURE_HELM_DEPLOYMENT.md) for complete setup & workflow steps.
+See [SECURE_HELM_DEPLOYMENT.md](./SECURE_HELM_DEPLOYMENT_STEPS.md) for complete setup & workflow steps.
 
 ---
 
