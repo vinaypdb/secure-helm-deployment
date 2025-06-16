@@ -7,18 +7,9 @@ pipeline {
         CHART_DIR = "charts/mario"
         RELEASE_NAME = "mario-release"
         NAMESPACE = "mario-ns"
-        DOCKER_USER = credentials('docker-username')   // Jenkins credential ID
-        DOCKER_PASS = credentials('docker-password')   // Jenkins credential ID
     }
 
     stages {
-        stage('Docker Login') {
-            steps {
-                echo "🔐 Logging in to Docker Hub..."
-                sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 echo "🔧 Building Docker image..."
@@ -29,15 +20,19 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo "📤 Pushing Docker image to Docker Hub..."
-                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $IMAGE_NAME:$IMAGE_TAG
+                    '''
+                }
             }
         }
 
         stage('Trivy Image Scan') {
             steps {
-                echo "🔍 Running Trivy vulnerability scan..."
-                // You can use --exit-code 1 to fail the build on HIGH/CRITICAL vulnerabilities
-                sh 'trivy image --exit-code 0 --severity HIGH,CRITICAL $IMAGE_NAME:$IMAGE_TAG'
+                echo "🔍 Running Trivy scan..."
+                sh 'trivy image $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
@@ -50,14 +45,14 @@ pipeline {
 
         stage('Helm Template') {
             steps {
-                echo "📦 Rendering Helm templates..."
+                echo "📦 Generating Helm templates..."
                 sh 'helm template $RELEASE_NAME $CHART_DIR'
             }
         }
 
         stage('Helm Deploy') {
             steps {
-                echo "🚀 Deploying application with Helm..."
+                echo "🚀 Deploying to Kubernetes with Helm..."
                 sh 'helm upgrade --install $RELEASE_NAME $CHART_DIR --namespace $NAMESPACE --create-namespace'
             }
         }
